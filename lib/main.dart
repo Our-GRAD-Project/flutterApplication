@@ -1,7 +1,9 @@
 import 'package:baseera_app/presentation/on_boarding/on_boarding.dart';
 import 'package:baseera_app/presentation/on_boarding_survey/on_boarding_survey.dart';
+import 'package:baseera_app/presentation/register/sign_in_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,7 +23,10 @@ class MyApp extends StatelessWidget {
     builder: (_ , child) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: OnboardingScreen(),
+      theme:ThemeData(
+        textTheme: GoogleFonts.changaOneTextTheme(),
+      ),
+      home: SignInScreen(),
     );
   });
 }
