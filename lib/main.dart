@@ -1,3 +1,4 @@
+import 'package:baseera_app/presentation/home_screen/bottom_navigator.dart';
 import 'package:baseera_app/presentation/on_boarding/on_boarding.dart';
 import 'package:baseera_app/presentation/on_boarding_survey/on_boarding_survey.dart';
 import 'package:baseera_app/presentation/register/sign_in_screen.dart';
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
       theme:ThemeData(
         textTheme: GoogleFonts.changaOneTextTheme(),
       ),
-      home: SignInScreen(),
+      home: HomeNavigator(),
     );
   });
 }

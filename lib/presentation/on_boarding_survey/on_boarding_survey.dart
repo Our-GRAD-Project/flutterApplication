@@ -196,6 +196,7 @@ class _OnboardingSurveyState extends State<OnboardingSurvey> {
               style: TextStyle(
                 fontSize: 16.sp,
                 color: isSelected ? const Color(0xff0088FA) : Colors.black,
+                fontFamily: 'roboto'
               ),
               textAlign: TextAlign.center,
             ),
@@ -271,6 +272,7 @@ class _OnboardingSurveyState extends State<OnboardingSurvey> {
           style: TextStyle(
             fontSize: 32.sp,
             color: Colors.black,
+            fontFamily: "roboto"
           ),
           textAlign: TextAlign.center,
         ),
@@ -347,7 +349,7 @@ class _OnboardingSurveyState extends State<OnboardingSurvey> {
   Widget _buildQuestionText() {
     return Text(
       _questions[_currentStep],
-      style: TextStyle(fontSize: 32.sp, fontWeight: FontWeight.w700),
+      style: TextStyle(fontSize: 32.sp, fontWeight: FontWeight.w400),
       textAlign: TextAlign.center,
     );
   }

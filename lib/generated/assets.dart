@@ -9,5 +9,6 @@ class Assets {
   static const String imagesMale = 'assets/images/male.png';
   static const String imagesSuccess = 'assets/images/success.png';
   static const String imagesTempBook = 'assets/images/temp_book.png';
+  static const String imagesSplashLogo = 'assets/images/splash_logo.png';
 
 }

@@ -26,7 +26,8 @@ Widget genderCard(String label, Image image, bool isSelected, VoidCallback onTap
             style: TextStyle(
               fontSize: 32.sp,
               color: isSelected ? const Color(0xff0088FA) :Colors.black,
-              fontWeight: FontWeight.w400,
+              fontWeight:  FontWeight.w400,
+                fontFamily: 'Roboto'
             ),
           ),
         ],
@@ -74,6 +75,7 @@ class AnswerOptions extends StatelessWidget {
                 fontSize: 32.sp,
                 color: isSelected ? const Color(0xff0088FA) : Colors.black,
                 fontWeight: FontWeight.w400,
+                fontFamily: 'roboto'
               ),
             ),
           ),
