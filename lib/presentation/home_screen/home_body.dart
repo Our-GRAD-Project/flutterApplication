@@ -1,8 +1,8 @@
+import 'package:baseera_app/presentation/book_detail_screen/book_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hugeicons/hugeicons.dart';
 
-import '../summary_screen/summary_screen.dart';
 import 'animation.dart';
 
 
@@ -93,7 +93,7 @@ Widget _buildHorizontalBookList() {
           padding: EdgeInsets.only(right: 12.w),
           child: GestureDetector(
             onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (ctx)=> BookSummaryWidget()));
+              Navigator.push(context, MaterialPageRoute(builder: (ctx)=> BookDetailsScreen()));
             },
             child: Container(
               decoration: BoxDecoration(

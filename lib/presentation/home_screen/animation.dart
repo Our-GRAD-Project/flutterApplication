@@ -31,11 +31,11 @@ Widget buildFeaturedCard() {
                       color: Colors.white,
                     ),),
                     Text('Summary', style: TextStyle(
-                      fontSize: 44.sp,
+                      fontSize: 40.sp,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),),
-                    SizedBox(height: 12.h),
+                    SizedBox(height: 5.h),
                     ElevatedButton(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(

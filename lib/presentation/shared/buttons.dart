@@ -1,21 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Button extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
+  final double? width;
+  final double? height;
 
-  const Button({super.key, required this.text, required this.onPressed});
+  const Button({
+    Key? key,
+    required this.text,
+    required this.onPressed,
+    this.width,
+    this.height,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: double.infinity,
-      height: 60,
+      width: width ?? double.infinity,
+      height: height ?? 60.h,
       child: ElevatedButton(
         onPressed: onPressed,
-        style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-        child: Text(text, style: const TextStyle(fontSize: 25, color: Colors.white)),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.blue,
+        ),
+        child: Text(
+          text,
+          style: TextStyle(fontSize: 25.sp, color: Colors.white),
+        ),
       ),
     );
   }
 }
+
