@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../cubits/auth/auth_cubit.dart';
+import '../../cubits/auth/auth_state.dart';
 import '../shared/buttons.dart';
 import '../shared/social_buttons.dart';
 import '../shared/text_field.dart';
@@ -23,10 +26,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void _validateAndSignUp() {
     if (_formKey.currentState!.validate()) {
-      // Navigate to Success Screen
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const SuccessScreen()),
+      context.read<AuthCubit>().signUp(
+        userName: _fullNameController.text.trim(),
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
       );
     }
   }
@@ -36,159 +39,195 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 40),
-                Image.asset(
-                  'assets/images/app_specific/book-open-svgrepo-com 1.png',
-                  height: 80,
-                  fit: BoxFit.contain,
+        child: BlocListener<AuthCubit, AuthState>(
+          listener: (context, state) {
+            if (state is AuthSignedUp) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.message),
+                  backgroundColor: Colors.green,
                 ),
-                const SizedBox(height: 30),
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Hello, 👋',
-                    style: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold),
+              );
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const SuccessScreen()),
+              );
+            } else if (state is AuthError) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.message),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
+          },
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 40),
+                  Image.asset(
+                    'assets/images/app_specific/book-open-svgrepo-com 1.png',
+                    height: 80,
+                    fit: BoxFit.contain,
                   ),
-                ),
-                const SizedBox(height: 8),
-
-                /// 📌 **Full Name Field**
-                CustomTextField(
-                  hintText: "Full Name",
-                  controller: _fullNameController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Full name is required";
-                    }
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: 16),
-
-                /// 📌 **Phone/Email Field**
-                CustomTextField(
-                  hintText: "Phone/Email",
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Email is required";
-                    }
-                    if (!RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$").hasMatch(value)) {
-                      return "Enter a valid email address";
-                    }
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: 16),
-
-                /// 📌 **Password Field**
-                CustomTextField(
-                  hintText: "Password",
-                  obscureText: _obscurePassword,
-                  controller: _passwordController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Password is required";
-                    }
-                    if (value.length < 6) {
-                      return "Password must be at least 6 characters long";
-                    }
-                    return null;
-                  },
-                  suffixIcon: IconButton(
-                    icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
-                    onPressed: () {
-                      setState(() {
-                        _obscurePassword = !_obscurePassword;
-                      });
-                    },
-                  ),
-                ),
-
-                const SizedBox(height: 16),
-
-                /// 📌 **Confirm Password Field**
-                CustomTextField(
-                  hintText: "Confirm Password",
-                  obscureText: _obscureConfirmPassword,
-                  controller: _confirmPasswordController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Confirm password is required";
-                    }
-                    if (value != _passwordController.text) {
-                      return "Passwords do not match";
-                    }
-                    return null;
-                  },
-                  suffixIcon: IconButton(
-                    icon: Icon(_obscureConfirmPassword ? Icons.visibility_off : Icons.visibility),
-                    onPressed: () {
-                      setState(() {
-                        _obscureConfirmPassword = !_obscureConfirmPassword;
-                      });
-                    },
-                  ),
-                ),
-
-                const SizedBox(height: 30),
-
-                /// 📌 **Sign Up Button**
-                Button(
-                  text: 'Sign Up',
-                  onPressed: _validateAndSignUp,
-                ),
-
-                const SizedBox(height: 30),
-                /// 📌 **OR Divider**
-                Row(
-                  children: [
-                    Expanded(child: Divider(thickness: 1, color: Colors.grey.shade400, indent: 90)),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Text("Or continue with ", style: TextStyle(color: Colors.grey)),
+                  const SizedBox(height: 30),
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Hello, 👋',
+                      style: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold),
                     ),
-                    Expanded(child: Divider(thickness: 1, color: Colors.grey.shade400, endIndent: 90)),
-                  ],
-                ),
-                const SizedBox(height: 20),
+                  ),
+                  const SizedBox(height: 8),
 
-                /// 📌 **Social Media Login Buttons**
-                const SocialButtons(),
+                  /// 📌 **Full Name Field**
+                  CustomTextField(
+                    hintText: "Full Name",
+                    controller: _fullNameController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Full name is required";
+                      }
+                      return null;
+                    },
+                  ),
 
-                const SizedBox(height: 30),
+                  const SizedBox(height: 16),
 
-                /// 📌 **Already have an account?**
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("Already have an account?", style: TextStyle(color: Colors.grey, fontSize: 18)),
-                    TextButton(
+                  /// 📌 **Phone/Email Field**
+                  CustomTextField(
+                    hintText: "Email",
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Email is required";
+                      }
+                      if (!RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$").hasMatch(value)) {
+                        return "Enter a valid email address";
+                      }
+                      return null;
+                    },
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  /// 📌 **Password Field**
+                  CustomTextField(
+                    hintText: "Password",
+                    obscureText: _obscurePassword,
+                    controller: _passwordController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Password is required";
+                      }
+                      if (value.length < 6) {
+                        return "Password must be at least 6 characters long";
+                      }
+                      return null;
+                    },
+                    suffixIcon: IconButton(
+                      icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
                       onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) => const SignInScreen()),
-                        );
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
                       },
-                      child: const Text('Sign in', style: TextStyle(color: Colors.blue, fontSize: 18)),
                     ),
-                  ],
-                ),
-              ],
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  /// 📌 **Confirm Password Field**
+                  CustomTextField(
+                    hintText: "Confirm Password",
+                    obscureText: _obscureConfirmPassword,
+                    controller: _confirmPasswordController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Confirm password is required";
+                      }
+                      if (value != _passwordController.text) {
+                        return "Passwords do not match";
+                      }
+                      return null;
+                    },
+                    suffixIcon: IconButton(
+                      icon: Icon(_obscureConfirmPassword ? Icons.visibility_off : Icons.visibility),
+                      onPressed: () {
+                        setState(() {
+                          _obscureConfirmPassword = !_obscureConfirmPassword;
+                        });
+                      },
+                    ),
+                  ),
+
+                  const SizedBox(height: 30),
+
+                  /// 📌 **Sign Up Button**
+                  BlocBuilder<AuthCubit, AuthState>(
+                    builder: (context, state) {
+                      return Button(
+                        text: state is AuthLoading ? 'Signing Up...' : 'Sign Up',
+                        onPressed: state is AuthLoading ? null : _validateAndSignUp,
+                      );
+                    },
+                  ),
+
+                  const SizedBox(height: 30),
+                  /// 📌 **OR Divider**
+                  Row(
+                    children: [
+                      Expanded(child: Divider(thickness: 1, color: Colors.grey.shade400, indent: 90)),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: Text("Or continue with ", style: TextStyle(color: Colors.grey)),
+                      ),
+                      Expanded(child: Divider(thickness: 1, color: Colors.grey.shade400, endIndent: 90)),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+
+                  /// 📌 **Social Media Login Buttons**
+                  const SocialButtons(),
+
+                  const SizedBox(height: 30),
+
+                  /// 📌 **Already have an account?**
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("Already have an account?", style: TextStyle(color: Colors.grey, fontSize: 18)),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => const SignInScreen()),
+                          );
+                        },
+                        child: const Text('Sign in', style: TextStyle(color: Colors.blue, fontSize: 18)),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _fullNameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
   }
 }
