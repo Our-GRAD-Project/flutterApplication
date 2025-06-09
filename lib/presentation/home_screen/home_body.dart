@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hugeicons/hugeicons.dart';
 
+import '../shared/book_card.dart';
 import 'animation.dart';
 
 
@@ -10,26 +11,43 @@ class HomeBody extends StatelessWidget {
   const HomeBody({super.key});
 
   @override
+  @override
   Widget build(BuildContext context) {
-    return   Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildSearchBar(),
-          SizedBox(height: 16.h),
-          buildFeaturedCard(),
-          SizedBox(height: 24.h),
-          _buildSectionTitle('Today for you'),
-          SizedBox(height: 8.h),
-          _buildSectionSubtitle('Similar summaries to the ones you like'),
-          SizedBox(height: 16.h),
-          _buildHorizontalBookList(),
-          SizedBox(height: 24.h),
-          buildFeaturedCard(), // Duplicated as shown in the image
-        ],
-      );
+    List<String> todayImages = List.generate(10, (index) => 'assets/images/ss.png');
+    List<String> topRatedImages = List.generate(10, (index) => 'assets/images/ss.png');
 
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSearchBar(),
+        SizedBox(height: 16.h),
+        buildFeaturedCard(),
+        SizedBox(height: 24.h),
+
+        BookListSection(
+          title: 'Today for you',
+          subtitle: 'Similar summaries to the ones you like',
+          imagePaths: List.generate(10, (index) => 'assets/images/ss.png'),
+        ),
+
+
+        SizedBox(height: 24.h),
+        buildFeaturedCard(),
+
+        BookListSection(
+          title: 'Top Rated',
+          subtitle: 'Most loved books by our clients',
+          imagePaths: List.generate(10, (index) => 'assets/images/ss.png'),
+        ),
+
+        SizedBox(height: 24.h),
+      ],
+    );
   }
+
+
 }
+
 
 Widget _buildSearchBar() {
   return Container(
@@ -46,7 +64,7 @@ Widget _buildSearchBar() {
           color: Colors.grey.shade600,
         ),
         prefixIcon: HugeIcon(icon: HugeIcons.strokeRoundedSearch01, color: Colors.grey.shade600),
-        
+
         border: InputBorder.none,
         contentPadding: EdgeInsets.symmetric(vertical: 12.h),
       ),
@@ -56,62 +74,3 @@ Widget _buildSearchBar() {
 
 
 
-Widget _buildSectionTitle(String title) {
-  return Text(
-    title,
-    style: TextStyle(
-      fontSize: 32.sp,
-      fontWeight: FontWeight.normal,
-      color: Colors.black,
-    ),
-  );
-}
-
-Widget _buildSectionSubtitle(String subtitle) {
-  return Text(
-    subtitle,
-    style: TextStyle(
-      fontSize: 18.sp,
-      color: Colors.black,
-      fontFamily: "roboto"
-    ),
-  );
-}
-
-Widget _buildHorizontalBookList() {
-  List<String> bookImages = List.generate(6, (index) => 'assets/images/temp_book.png');
-
-  return SizedBox(
-    height: 200.h,
-    child: ListView.builder(
-      scrollDirection: Axis.horizontal,
-      itemCount: bookImages.length,
-      itemBuilder: (context, index) {
-        String imagePath = bookImages[index];
-
-        return Padding(
-          padding: EdgeInsets.only(right: 12.w),
-          child: GestureDetector(
-            onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (ctx)=> BookDetailsScreen()));
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20.r),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20.r),
-                child: Image.asset(
-                  imagePath,
-                  width: 115.w,
-                  height: 200.h,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    ),
-  );
-}
