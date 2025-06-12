@@ -43,6 +43,7 @@ class AnswerOptions extends StatelessWidget {
   final String text;
   final bool isSelected;
   final VoidCallback onTap;
+  final int font;
 
 
   const AnswerOptions({
@@ -50,17 +51,18 @@ class AnswerOptions extends StatelessWidget {
     required this.text,
     required this.isSelected,
     required this.onTap,
+    required this.font,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 12.h),
+      padding: EdgeInsets.only(bottom: 10.h),
       child: GestureDetector(
         onTap: onTap,
         child: Container(
           width: double.infinity,
-          height: 64.h,
+          height: 60.h,
           decoration: BoxDecoration(
             border: Border.all(
               color: isSelected ? const Color(0xff0088FA) : Color(0xff444444),
@@ -72,7 +74,7 @@ class AnswerOptions extends StatelessWidget {
             child: Text(
               text,
               style: TextStyle(
-                fontSize: 32.sp,
+                fontSize: (font).sp,
                 color: isSelected ? const Color(0xff0088FA) : Colors.black,
                 fontWeight: FontWeight.w400,
                 fontFamily: 'roboto'

@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 import '../notification_screen/notification_screen.dart';
+import '../profile_screen/profile_screen.dart';
 import 'animation.dart';
 import 'library_body.dart';
 
@@ -201,7 +202,9 @@ class _HomeNavigatorState extends State<HomeNavigator> {
                 width: 5.w,
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=> ProfileScreen()));
+                },
                 icon: Icon(
                   Icons.person_outline_rounded,
                   size: 35.sp,

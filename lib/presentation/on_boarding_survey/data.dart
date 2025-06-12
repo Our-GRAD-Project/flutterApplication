@@ -4,16 +4,23 @@ class SurveyData {
   List<String>? areasToImprove;
   List<String>? selectedBooks;
   bool? agreementResponse;
+  String? contentType;
+  List<String>? skillsToImprove;
+  String? availableTime;
 
   SurveyData({
     this.gender,
     this.ageRange,
     this.areasToImprove,
-    this.selectedBooks ,
+    this.selectedBooks,
     this.agreementResponse,
+    this.contentType,
+    this.skillsToImprove,
+    this.availableTime,
   }){
     if(this.selectedBooks == null){ this.selectedBooks = [];
     }if(this.areasToImprove == null){ this.areasToImprove = [];
+    }if(this.skillsToImprove == null){ this.skillsToImprove = [];
     }
   }
 
@@ -24,6 +31,9 @@ class SurveyData {
       'areasToImprove': areasToImprove,
       'selectedBooks': selectedBooks,
       'agreementResponse': agreementResponse,
+      'contentType': contentType,
+      'skillsToImprove': skillsToImprove,
+      'availableTime': availableTime,
     };
   }
 
@@ -38,8 +48,11 @@ class SurveyData {
           ? List<String>.from(json['selectedBooks'])
           : null,
       agreementResponse: json['agreementResponse'],
+      contentType: json['contentType'],
+      skillsToImprove: json['skillsToImprove'] != null
+          ? List<String>.from(json['skillsToImprove'])
+          : null,
+      availableTime: json['availableTime'],
     );
   }
 }
-
-

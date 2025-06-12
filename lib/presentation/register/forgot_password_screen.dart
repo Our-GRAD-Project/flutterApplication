@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../cubits/auth/reset_password_cubit.dart';
-import '../../cubits/auth/reset_password_states.dart';
+import '../../core/cubits/auth/reset_password_cubit.dart';
+import '../../core/cubits/auth/reset_password_states.dart';
 import 'verify_code_screen.dart';
 import '../shared/buttons.dart';
 import '../shared/text_field.dart';

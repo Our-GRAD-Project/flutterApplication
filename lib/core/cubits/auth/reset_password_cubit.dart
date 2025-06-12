@@ -1,6 +1,7 @@
-import 'package:baseera_app/cubits/auth/reset_password_states.dart';
+import 'package:baseera_app/core/cubits/auth/reset_password_states.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../core/services/auth_service.dart';
+
+import '../../services/auth_service.dart';
 
 // Reset Password Cubit
 class ResetPasswordCubit extends Cubit<ResetPasswordState> {

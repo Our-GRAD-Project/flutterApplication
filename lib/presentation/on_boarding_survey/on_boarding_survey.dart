@@ -1,3 +1,4 @@
+import 'package:baseera_app/presentation/home_screen/bottom_navigator.dart';
 import 'package:baseera_app/presentation/on_boarding_survey/data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,7 +16,7 @@ class OnboardingSurvey extends StatefulWidget {
 
 class _OnboardingSurveyState extends State<OnboardingSurvey> {
   int _currentStep = 0;
-  double _progressValue = 1 / 5;
+  double _progressValue = 1 / 8;
   SurveyData surveyAnswers = SurveyData();
 
   // Store user responses
@@ -24,9 +25,12 @@ class _OnboardingSurveyState extends State<OnboardingSurvey> {
   final List<String> _questions = [
     'Select your gender',
     'What is your age?',
-    'Choose areas to improve',
+    'What is your main goal in reading books?',
+    'What type of content do you prefer?',
+    'What skills or topics would you like to improve?',
     'What books are you interested in?',
     'Do you agree with this sentence?',
+    'What time do you have available each day for reading or learning?',
   ];
 
   final List<String> _subQuestions = [
@@ -39,13 +43,37 @@ class _OnboardingSurveyState extends State<OnboardingSurvey> {
 
   // Areas to improve
   final List<Map<String, IconData>> _areas = [
-    {'Motivation': Icons.emoji_objects},
-    {'Leadership': Icons.group},
-    {'Planning': Icons.calendar_today},
-    {'Management': Icons.business},
-    {'Emotions': Icons.favorite},
-    {'Habits': Icons.loop},
-    {'Mindset': Icons.psychology},
+    {'Personal Development': Icons.emoji_objects},
+    {'Strengthening Relationships': Icons.group},
+    {'Productivity Enhancement': Icons.calendar_today},
+    {'Career Success': Icons.business},
+    {'Confidence': Icons.star_half_sharp},
+    {'Habit Improvement': Icons.loop},
+    {'Building Self': Icons.psychology},
+  ];
+
+  // Content types
+  final List<String> _contentTypes = [
+    'Real-Life Stories',
+    'Practical Steps',
+    'Inspiration and Motivation'
+  ];
+
+  // Skills to improve
+  final List<String> _skillsToImprove = [
+    'Leadership',
+    'Time Management',
+    'Emotional Intelligence',
+    'Critical Thinking',
+    'Finance and Investment',
+    'Happiness and Well-Being'
+  ];
+
+  // Available time options
+  final List<String> _availableTime = [
+    '5 minutes',
+    '10 minutes',
+    '15+ minutes'
   ];
 
   @override
@@ -63,10 +91,50 @@ class _OnboardingSurveyState extends State<OnboardingSurvey> {
       });
     }
     else
-      {
-        //temp remeber the stack
-        Navigator.push(context, MaterialPageRoute(builder: (ctx)=> OnboardingSurvey()));
-      }
+    {
+      //temp remeber the stack
+      //  showDialog(
+      //   context: context,
+      //   builder: (BuildContext context) {
+      //     return AlertDialog(
+      //       title: Text('Survey Results'),
+      //       content: SingleChildScrollView(
+      //         child: Column(
+      //           crossAxisAlignment: CrossAxisAlignment.start,
+      //           mainAxisSize: MainAxisSize.min,
+      //           children: [
+      //             Text('Gender: ${surveyAnswers.gender}'),
+      //             SizedBox(height: 8),
+      //             Text('Age Range: ${surveyAnswers.ageRange}'),
+      //             SizedBox(height: 8),
+      //             Text('Areas to Improve: ${surveyAnswers.areasToImprove?.join(", ")}'),
+      //             SizedBox(height: 8),
+      //             Text('Selected Books: ${surveyAnswers.selectedBooks?.join(", ")}'),
+      //             SizedBox(height: 8),
+      //             Text('Agreement Response: ${surveyAnswers.agreementResponse}'),
+      //             SizedBox(height: 8),
+      //             Text('Content Type: ${surveyAnswers.contentType}'),
+      //             SizedBox(height: 8),
+      //             Text('Skills to Improve: ${surveyAnswers.skillsToImprove?.join(", ")}'),
+      //             SizedBox(height: 8),
+      //             Text('Available Time: ${surveyAnswers.availableTime}'),
+      //           ],
+      //         ),
+      //       ),
+      //       actions: [
+      //         TextButton(
+      //           onPressed: () {
+      //             Navigator.of(context).pop();
+      //           },
+      //           child: Text('OK'),
+      //         ),
+      //       ],
+      //     );
+      //   },
+      // );
+       Navigator.push(context, MaterialPageRoute(builder: (ctx) => HomeNavigator()));
+
+    }
   }
 
   Widget _buildGenderSelection() {
@@ -79,7 +147,7 @@ class _OnboardingSurveyState extends State<OnboardingSurvey> {
             "assets/images/female.png",
           ),
           surveyAnswers.gender == 'Female',
-          () => setState(() {
+              () => setState(() {
             surveyAnswers.gender = 'Female';
             _surveyState = SurveyState(surveyData: surveyAnswers);
           }),
@@ -91,7 +159,7 @@ class _OnboardingSurveyState extends State<OnboardingSurvey> {
             "assets/images/male.png",
           ),
           surveyAnswers.gender == 'Male',
-          () => setState(() {
+              () => setState(() {
             surveyAnswers.gender = 'Male';
             _surveyState = SurveyState(surveyData: surveyAnswers);
           }),
@@ -106,6 +174,7 @@ class _OnboardingSurveyState extends State<OnboardingSurvey> {
         SizedBox(height: 24.h),
         for (var range in _ageRanges) ...[
           AnswerOptions(
+            font: 32,
             text: range,
             isSelected: surveyAnswers.ageRange == range,
             onTap: () => setState(() {
@@ -139,7 +208,7 @@ class _OnboardingSurveyState extends State<OnboardingSurvey> {
           children: [
             _buildAreaItem(_areas[2].keys.first, _areas[2].values.first),
             SizedBox(width: 11.w),
-                _buildAreaItem(_areas[3].keys.first, _areas[3].values.first),
+            _buildAreaItem(_areas[3].keys.first, _areas[3].values.first),
             SizedBox(width: 11.w,),
 
             _buildAreaItem(_areas[4].keys.first, _areas[4].values.first),
@@ -187,16 +256,16 @@ class _OnboardingSurveyState extends State<OnboardingSurvey> {
           children: [
             Icon(
               icon,
-              size: 30.sp,
+              size: 20.sp,
               color: isSelected ? const Color(0xff0088FA) : Colors.black,
             ),
             SizedBox(height: 8.h),
             Text(
               areaName,
               style: TextStyle(
-                fontSize: 16.sp,
-                color: isSelected ? const Color(0xff0088FA) : Colors.black,
-                fontFamily: 'roboto'
+                  fontSize: 13.sp,
+                  color: isSelected ? const Color(0xff0088FA) : Colors.black,
+                  fontFamily: 'roboto'
               ),
               textAlign: TextAlign.center,
             ),
@@ -205,7 +274,6 @@ class _OnboardingSurveyState extends State<OnboardingSurvey> {
       ),
     );
   }
-
 
   Widget _buildBookSelection() {
     List<String> bookPaths = List.generate(9, (index) => 'assets/images/temp_book.png');
@@ -260,7 +328,6 @@ class _OnboardingSurveyState extends State<OnboardingSurvey> {
     );
   }
 
-
   Widget _buildAgreement() {
     return Column(
       children: [
@@ -268,11 +335,11 @@ class _OnboardingSurveyState extends State<OnboardingSurvey> {
           height: 30.h,
         ),
         Text(
-          "“What doesn't kill us makes us stronger”",
+          """What doesn't kill us makes us stronger""",
           style: TextStyle(
-            fontSize: 32.sp,
-            color: Colors.black,
-            fontFamily: "roboto"
+              fontSize: 32.sp,
+              color: Colors.black,
+              fontFamily: "roboto"
           ),
           textAlign: TextAlign.center,
         ),
@@ -280,6 +347,7 @@ class _OnboardingSurveyState extends State<OnboardingSurvey> {
           height: 30.h,
         ),
         AnswerOptions(
+          font: 32,
           text: 'Yes',
           isSelected: surveyAnswers.agreementResponse == true,
           onTap: () => setState(() {
@@ -288,6 +356,7 @@ class _OnboardingSurveyState extends State<OnboardingSurvey> {
           }),
         ),
         AnswerOptions(
+          font: 32,
           text: 'No',
           isSelected: surveyAnswers.agreementResponse == false,
           onTap: () => setState(() {
@@ -295,6 +364,67 @@ class _OnboardingSurveyState extends State<OnboardingSurvey> {
             _surveyState = SurveyState(surveyData: surveyAnswers);
           }),
         ),
+      ],
+    );
+  }
+
+  Widget _buildContentTypeSelection() {
+    return Column(
+      children: [
+        SizedBox(height: 24.h),
+        for (var contentType in _contentTypes) ...[
+          AnswerOptions(
+            font: 20,
+            text: contentType,
+            isSelected: surveyAnswers.contentType == contentType,
+            onTap: () => setState(() {
+              surveyAnswers.contentType = contentType;
+              _surveyState = SurveyState(surveyData: surveyAnswers);
+            }),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildSkillsSelection() {
+    return Column(
+      children: [
+        SizedBox(height: 24.h),
+        for (var skill in _skillsToImprove) ...[
+          AnswerOptions(
+            font: 20,
+            text: skill,
+            isSelected: surveyAnswers.skillsToImprove!.contains(skill),
+            onTap: () => setState(() {
+              if (surveyAnswers.skillsToImprove!.contains(skill)) {
+                surveyAnswers.skillsToImprove!.remove(skill);
+              } else {
+                surveyAnswers.skillsToImprove!.add(skill);
+              }
+              _surveyState = SurveyState(surveyData: surveyAnswers);
+            }),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildTimeSelection() {
+    return Column(
+      children: [
+        SizedBox(height: 24.h),
+        for (var time in _availableTime) ...[
+          AnswerOptions(
+            font: 20,
+            text: time,
+            isSelected: surveyAnswers.availableTime == time,
+            onTap: () => setState(() {
+              surveyAnswers.availableTime = time;
+              _surveyState = SurveyState(surveyData: surveyAnswers);
+            }),
+          ),
+        ],
       ],
     );
   }
@@ -338,9 +468,15 @@ class _OnboardingSurveyState extends State<OnboardingSurvey> {
       case 2:
         return _buildAreasToImprove();
       case 3:
-        return _buildBookSelection();
+        return _buildContentTypeSelection();
       case 4:
+        return _buildSkillsSelection();
+      case 5:
+        return _buildBookSelection();
+      case 6:
         return _buildAgreement();
+      case 7:
+        return _buildTimeSelection();
       default:
         return const SizedBox();
     }
@@ -376,19 +512,19 @@ class _OnboardingSurveyState extends State<OnboardingSurvey> {
               _buildQuestionText(),
               _currentStep == 2
                   ? Text(
-                      _subQuestions[0],
-                      style: TextStyle(
-                          fontSize: 16.sp, fontWeight: FontWeight.w400),
-                      textAlign: TextAlign.center,
-                    )
+                _subQuestions[0],
+                style: TextStyle(
+                    fontSize: 16.sp, fontWeight: FontWeight.w400),
+                textAlign: TextAlign.center,
+              )
                   : SizedBox(),
-              _currentStep == 3
+              _currentStep == 5
                   ? Text(
-                      _subQuestions[1],
-                      style: TextStyle(
-                          fontSize: 16.sp, fontWeight: FontWeight.w400),
-                      textAlign: TextAlign.center,
-                    )
+                _subQuestions[1],
+                style: TextStyle(
+                    fontSize: 16.sp, fontWeight: FontWeight.w400),
+                textAlign: TextAlign.center,
+              )
                   : SizedBox(),
               Expanded(
                 child: Center(
