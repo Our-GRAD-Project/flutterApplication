@@ -5,12 +5,14 @@ import '../category_detail_screen/category_detail_screen.dart';
 class AnimatedCategoryCard extends StatefulWidget {
   final String icon;
   final String title;
+  final String categoryId; // Added categoryId parameter
   final Duration delay;
 
   const AnimatedCategoryCard({
     Key? key,
     required this.icon,
     required this.title,
+    required this.categoryId, // Required categoryId
     this.delay = Duration.zero,
   }) : super(key: key);
 
@@ -89,6 +91,7 @@ class _AnimatedCategoryCardState extends State<AnimatedCategoryCard>
                     builder: (_) => CategoryDetailScreen(
                       categoryTitle: widget.title,
                       categoryIcon: widget.icon,
+                      categoryId: widget.categoryId, // Pass categoryId
                     ),
                   ),
                 );

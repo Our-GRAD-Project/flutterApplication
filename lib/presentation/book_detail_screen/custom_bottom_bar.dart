@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../core/models/summary_model.dart';
 import '../AudioPlayer/AudioPlayer.dart';
 import '../shared/buttons.dart';
 import '../summary_screen/summary_screen.dart';
 
 class CustomBottomBar extends StatelessWidget {
-  final VoidCallback onRead;
-  final VoidCallback onListen;
+  final Summary summary;
 
-  const CustomBottomBar({required this.onRead, required this.onListen, super.key});
+  const CustomBottomBar({
+    Key? key,
+    required this.summary,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,10 +38,13 @@ class CustomBottomBar extends StatelessWidget {
           Expanded(
             child: Button(
               text: "📖 Read",
-              onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context){
-                  return const BookSummaryWidget();
-                }));
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => BookSummaryWidget(summary: summary),
+                  ),
+                );
               },
             ),
           ),
@@ -46,12 +52,12 @@ class CustomBottomBar extends StatelessWidget {
           Expanded(
             child: Button(
               text: "🎧 Listen",
-              onPressed:() {
+              onPressed: () {
                 showModalBottomSheet(
                   context: context,
                   isScrollControlled: true,
                   backgroundColor: Colors.transparent,
-                  builder: (_) => const AudioPlayerSheet(),
+                  builder: (_) => AudioPlayerSheet(audioUrl: summary.audioPath),
                 );
               },
             ),

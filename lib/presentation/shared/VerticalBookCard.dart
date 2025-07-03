@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:baseera_app/presentation/book_detail_screen/book_detail_screen.dart';
+import 'package:baseera_app/core/models/summary_model.dart';
 
 class VerticalBookCard extends StatelessWidget {
   final String imagePath;
+  final Summary summary;
 
   const VerticalBookCard({
     Key? key,
-    required this.imagePath, required String title,
+    required this.imagePath,
+    required this.summary,
   }) : super(key: key);
 
   @override
@@ -16,7 +19,9 @@ class VerticalBookCard extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => BookDetailsScreen()),
+          MaterialPageRoute(
+            builder: (_) => BookDetailsScreen(summary: summary),
+          ),
         );
       },
       child: Container(
@@ -35,7 +40,7 @@ class VerticalBookCard extends StatelessWidget {
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(14.r),
-          child: Image.asset(
+          child: Image.network(
             imagePath,
             fit: BoxFit.cover,
             filterQuality: FilterQuality.high,

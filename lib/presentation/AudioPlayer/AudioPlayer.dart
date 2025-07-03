@@ -3,7 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:just_audio/just_audio.dart';
 
 class AudioPlayerSheet extends StatefulWidget {
-  const AudioPlayerSheet({super.key});
+  final String audioUrl;
+
+  const AudioPlayerSheet({super.key, required this.audioUrl});
 
   @override
   State<AudioPlayerSheet> createState() => _AudioPlayerSheetState();
@@ -22,13 +24,17 @@ class _AudioPlayerSheetState extends State<AudioPlayerSheet> {
   }
 
   Future<void> _initAudio() async {
-    await _audioPlayer.setAsset('assets/audio/sample.mp3');
-    _duration = _audioPlayer.duration ?? Duration.zero;
-    _audioPlayer.positionStream.listen((p) {
-      setState(() {
-        _position = p;
+    try {
+      await _audioPlayer.setUrl(widget.audioUrl);
+
+      _duration = _audioPlayer.duration ?? Duration.zero;
+
+      _audioPlayer.positionStream.listen((position) {
+        setState(() => _position = position);
       });
-    });
+    } catch (e) {
+      debugPrint('Audio load error: $e');
+    }
   }
 
   void _togglePlay() async {
@@ -84,10 +90,7 @@ class _AudioPlayerSheetState extends State<AudioPlayerSheet> {
               children: [
                 Text(
                   "Volume",
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    color: Colors.black,
-                  ),
+                  style: TextStyle(fontSize: 18.sp, color: Colors.black),
                 ),
                 SizedBox(height: 10.h),
                 StatefulBuilder(
@@ -113,7 +116,6 @@ class _AudioPlayerSheetState extends State<AudioPlayerSheet> {
     );
   }
 
-
   @override
   void dispose() {
     _audioPlayer.dispose();
@@ -124,9 +126,9 @@ class _AudioPlayerSheetState extends State<AudioPlayerSheet> {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
-      decoration: BoxDecoration(
-        color: const Color(0xffF8F6F6),
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
+      decoration: const BoxDecoration(
+        color: Color(0xffF8F6F6),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,

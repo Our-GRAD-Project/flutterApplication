@@ -1,17 +1,18 @@
-import 'package:baseera_app/presentation/book_detail_screen/book_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:baseera_app/core/models/summary_model.dart';
+import 'package:baseera_app/presentation/book_detail_screen/book_detail_screen.dart';
 
 class BookListSection extends StatelessWidget {
   final String title;
   final String subtitle;
-  final List<String> imagePaths;
+  final List<Summary> summaries;
 
   const BookListSection({
     Key? key,
     required this.title,
     required this.subtitle,
-    required this.imagePaths,
+    required this.summaries,
   }) : super(key: key);
 
   @override
@@ -19,33 +20,33 @@ class BookListSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionTitle(title),
+        Text(title, style: TextStyle(fontSize: 32.sp, color: Colors.black)),
         SizedBox(height: 8.h),
-        _buildSectionSubtitle(subtitle),
+        Text(subtitle, style: TextStyle(fontSize: 18.sp, fontFamily: "roboto", color: Colors.black)),
         SizedBox(height: 16.h),
         SizedBox(
           height: 270.h,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: imagePaths.length,
+            itemCount: summaries.length,
             itemBuilder: (context, index) {
+              final summary = summaries[index];
               return Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10.w),
                 child: GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (ctx) => BookDetailsScreen()),
+                      MaterialPageRoute(
+                        builder: (ctx) => BookDetailsScreen(summary: summary),
+                      ),
                     );
                   },
                   child: Container(
                     width: 160.w,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16.r),
-                      border: Border.all(
-                        color: Colors.black.withOpacity(0.5),
-                        width: 2,
-                      ),
+                      border: Border.all(color: Colors.black.withOpacity(0.5), width: 2),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(0.25),
@@ -53,11 +54,8 @@ class BookListSection extends StatelessWidget {
                           offset: Offset(0, 6),
                         ),
                       ],
-                      gradient: LinearGradient(
-                        colors: [
-                          Color(0xFFFDF6EC),
-                          Color(0xFFECE4D9),
-                        ],
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFFFDF6EC), Color(0xFFECE4D9)],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
@@ -66,8 +64,8 @@ class BookListSection extends StatelessWidget {
                       borderRadius: BorderRadius.circular(14.r),
                       child: Stack(
                         children: [
-                          Image.asset(
-                            imagePaths[index],
+                          Image.network(
+                            summary.coverImagePath,
                             fit: BoxFit.cover,
                             width: double.infinity,
                             height: double.infinity,
@@ -94,28 +92,6 @@ class BookListSection extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildSectionTitle(String title) {
-    return Text(
-      title,
-      style: TextStyle(
-        fontSize: 32.sp,
-        fontWeight: FontWeight.normal,
-        color: Colors.black,
-      ),
-    );
-  }
-
-  Widget _buildSectionSubtitle(String subtitle) {
-    return Text(
-      subtitle,
-      style: TextStyle(
-        fontSize: 18.sp,
-        color: Colors.black,
-        fontFamily: "roboto",
-      ),
     );
   }
 }

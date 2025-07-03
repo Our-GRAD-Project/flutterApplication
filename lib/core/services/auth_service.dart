@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class AuthService {
-  static const String baseUrl = 'http://192.168.1.3:3000/api/v1';
+  static const String baseUrl = 'https://graduationprojectapi-production-e29d.up.railway.app/api/v1';
 
   Future<Map<String, dynamic>> signUp({
     required String userName,

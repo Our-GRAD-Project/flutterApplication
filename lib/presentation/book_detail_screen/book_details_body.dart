@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:baseera_app/core/models/summary_model.dart';
 
 class BookDetailsBody extends StatelessWidget {
-  const BookDetailsBody({super.key});
+  final Summary summary;
+
+  const BookDetailsBody({super.key, required this.summary});
 
   @override
   Widget build(BuildContext context) {
@@ -36,11 +39,11 @@ class BookDetailsBody extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(16.r),
-                  child: Image.asset(
-                    'assets/images/temp_book.png',
+                  child: Image.network(
+                    summary.coverImagePath,
                     width: 150.w,
                     height: 250.h,
-                    fit:BoxFit.cover,
+                    fit: BoxFit.cover,
                   ),
                 ),
                 SizedBox(width: 20.w),
@@ -49,28 +52,30 @@ class BookDetailsBody extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Swim for health in pure pools keep us...',
+                        summary.title,
                         style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w600),
                       ),
                       SizedBox(height: 25.h),
                       Text(
-                        'J.K. Rowling',
+                        summary.author,
                         style: TextStyle(color: Colors.blue, fontSize: 16.sp, fontWeight: FontWeight.w500),
                       ),
                       SizedBox(height: 40.h),
                       Text(
-                        'Released: Dec 2015',
+                        'Released: ${summary.createdAt}', // or a more proper format
                         style: TextStyle(color: Colors.grey, fontSize: 15.sp),
                       ),
                       SizedBox(height: 40.h),
                       SizedBox(
                         height: 35,
                         child: ElevatedButton.icon(
-                          onPressed: () {},
+                          onPressed: () {
+                            // download summary logic
+                          },
                           icon: Icon(HugeIcons.strokeRoundedInboxDownload, size: 25.sp, color: Colors.black),
                           label: Text(
                             "Download Summary",
-                            style: TextStyle(fontSize: 14.sp, color: Colors.black,fontWeight: FontWeight.bold, fontFamily: "roboto"),
+                            style: TextStyle(fontSize: 14.sp, color: Colors.black, fontWeight: FontWeight.bold),
                           ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0x8AA19D9D),
@@ -88,8 +93,8 @@ class BookDetailsBody extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildInfoItem('   ⭐   4.9', '6.4k reviews'),
-              _buildInfoItem('5.6 MB', '    Size'),
+              _buildInfoItem('⭐ 4.9', '6.4k reviews'),
+              _buildInfoItem('5.6 MB', 'Size'),
               _buildInfoItem('24', 'Pages'),
               _buildInfoItem('50M+', 'Downloads'),
             ],
@@ -98,19 +103,17 @@ class BookDetailsBody extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 10.w),
             child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text("About Ebook", style: TextStyle(fontSize: 25.sp)),
                 SizedBox(height: 12.h),
                 Text(
-                  "Swimming is good for the body because it makes it stronger and makes me look in shape. I learned to swim when I was two years old. I am very thankful that my father taught me at a young age.",
+                  summary.description,
                   style: TextStyle(fontSize: 14.sp, height: 1.6, color: Colors.grey),
                 ),
-
               ],
             ),
           ),
-
           SizedBox(height: 30.h),
         ],
       ),
@@ -121,7 +124,7 @@ class BookDetailsBody extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: TextStyle( fontSize: 20.sp,)),
+        Text(title, style: TextStyle(fontSize: 20.sp)),
         SizedBox(height: 4.h),
         Text(subtitle, style: TextStyle(color: Colors.grey, fontSize: 14.sp)),
       ],

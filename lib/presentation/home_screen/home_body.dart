@@ -2,108 +2,186 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hugeicons/hugeicons.dart';
 
+import '../../core/models/category_model.dart';
+import '../../core/models/summary_model.dart';
+import '../../core/services/category_service.dart';
+import '../../core/services/summary_service.dart';
+
 import '../shared/AnimatedCategoryCard.dart';
 import '../shared/book_card.dart';
 import 'animation.dart';
 
-class HomeBody extends StatelessWidget {
+class HomeBody extends StatefulWidget {
   const HomeBody({super.key});
 
   @override
+  State<HomeBody> createState() => _HomeBodyState();
+}
+
+class _HomeBodyState extends State<HomeBody> {
+  final CategoryService _categoryService = CategoryService();
+  final SummaryService _summaryService = SummaryService();
+
+  List<Category> _categories = [];
+  List<Summary> _summaries = [];
+
+  bool _isLoading = true;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchData();
+  }
+
+  Future<void> _fetchData() async {
+    try {
+      final categories = await _categoryService.getCategories();
+      final summaries = await _summaryService.getSummaries();
+
+      setState(() {
+        _categories = categories;
+        _summaries = summaries;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _error = e.toString();
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    List<String> todayImages = List.generate(10, (index) => 'assets/images/ss.png');
-    List<String> topRatedImages = List.generate(10, (index) => 'assets/images/ss.png');
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (_error != null) {
+      return Center(child: Text('Error: $_error'));
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSearchBar(),
+        buildSearchBar(),
         SizedBox(height: 16.h),
-        buildFeaturedCard(),
+        buildFeaturedCard(), // you already had this, not shown in your snippet
         SizedBox(height: 24.h),
+
+        // First summary section
         BookListSection(
           title: 'Today for you',
           subtitle: 'Similar summaries to the ones you like',
-          imagePaths: todayImages,
+          summaries: _summaries,
         ),
+
         SizedBox(height: 24.h),
         buildFeaturedCard(),
         SizedBox(height: 24.h),
-        buildCategorySection(context),
+
+        // Category section
+        buildCategorySection(),
+
         SizedBox(height: 24.h),
+
+        // Reuse the same summaries again for now
         BookListSection(
           title: 'Top Rated',
           subtitle: 'Most loved books by our clients',
-          imagePaths: topRatedImages,
+          summaries: _summaries,
         ),
+
         SizedBox(height: 24.h),
       ],
     );
   }
-}
 
-Widget _buildSearchBar() {
-  return Container(
-    height: 48.h,
-    decoration: BoxDecoration(
-      color: Colors.grey.shade200,
-      borderRadius: BorderRadius.circular(24.r),
-    ),
-    child: TextField(
-      decoration: InputDecoration(
-        hintText: 'Type title, author, keyword',
-        hintStyle: TextStyle(
-          fontSize: 14.sp,
-          color: Colors.grey.shade600,
-        ),
-        prefixIcon: HugeIcon(icon: HugeIcons.strokeRoundedSearch01, color: Colors.grey.shade600),
-        border: InputBorder.none,
-        contentPadding: EdgeInsets.symmetric(vertical: 12.h),
+  Widget buildSearchBar() {
+    return Container(
+      height: 48.h,
+      decoration: BoxDecoration(
+        color: Colors.grey.shade200,
+        borderRadius: BorderRadius.circular(24.r),
       ),
-    ),
-  );
-}
-
-Widget buildCategorySection(BuildContext context) {
-  final categories = [
-    {'icon': '📈', 'title': 'Business'},
-    {'icon': '🧠', 'title': 'Productivity'},
-    {'icon': '🔬', 'title': 'Science'},
-    {'icon': '💪', 'title': 'Health'},
-    {'icon': '📖', 'title': 'Fiction'},
-  ];
-
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        'Categories',
-        style: TextStyle(
-          fontSize: 24.sp,
-          fontWeight: FontWeight.bold,
-          color: Colors.black87,
+      child: TextField(
+        decoration: InputDecoration(
+          hintText: 'Type title, author, keyword',
+          hintStyle: TextStyle(
+            fontSize: 14.sp,
+            color: Colors.grey.shade600,
+          ),
+          prefixIcon: HugeIcon(
+            icon: HugeIcons.strokeRoundedSearch01,
+            color: Colors.grey.shade600,
+          ),
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(vertical: 12.h),
         ),
       ),
-      SizedBox(height: 16.h),
-      SizedBox(
-        height: 80.h,
-        child: ListView.separated(
-          scrollDirection: Axis.horizontal,
-          itemCount: categories.length,
-          separatorBuilder: (_, __) => SizedBox(width: 16.w),
-          itemBuilder: (context, index) {
-            final category = categories[index];
-            final title = category['title']!;
-            final icon = category['icon']!;
+    );
+  }
 
-            return AnimatedCategoryCard(
-              title: title,
-              icon: icon,
-              delay: Duration(milliseconds: index * 150),
-            );
-          },
+  Widget buildCategorySection() {
+    final Map<String, String> categoryIcons = {
+      'Business': '📈',
+      'Productivity': '🧠',
+      'Science': '🔬',
+      'Health': '💪',
+      'Fiction': '📖',
+      'Leadership': '👑',
+      'Technology': '💻',
+      'Emotional Intelligence': '🌟',
+      'History': '📚',
+      'Biography': '👤',
+      'Critical Thinking': '🧠',
+      'Psychology': '🧭',
+      'Finance and Investment': '📊',
+      'Time Management': '🧭',
+      'Management': '⚡',
+    };
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Categories',
+          style: TextStyle(
+            fontSize: 24.sp,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
         ),
-      ),
-    ],
-  );
+        SizedBox(height: 16.h),
+        SizedBox(
+          height: 80.h,
+          child: _buildCategoryList(categoryIcons),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCategoryList(Map<String, String> categoryIcons) {
+    if (_categories.isEmpty) {
+      return Center(child: Text('No categories available'));
+    }
+
+    return ListView.separated(
+      scrollDirection: Axis.horizontal,
+      itemCount: _categories.length,
+      separatorBuilder: (_, __) => SizedBox(width: 16.w),
+      itemBuilder: (context, index) {
+        final category = _categories[index];
+        final icon = categoryIcons[category.name] ?? '📚';
+
+        return AnimatedCategoryCard(
+          title: category.name,
+          icon: icon,
+          delay: Duration(milliseconds: index * 150),
+          categoryId: category.id,
+        );
+      },
+    );
+  }
 }
