@@ -8,8 +8,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-// Import your cubit and service files
-// Add this import
 import 'package:baseera_app/core/services/auth_service.dart';
 
 import 'core/cubits/auth/auth_cubit.dart';
@@ -42,9 +40,26 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
+              scaffoldBackgroundColor: Colors.white,
+              canvasColor: Colors.white,
+              primaryColor: Colors.white,
+              colorScheme: ColorScheme.fromSwatch().copyWith(
+                background: Colors.white,
+                primary: Colors.blue, // Optional if you have a primary color
+              ),
+              appBarTheme: AppBarTheme(
+                backgroundColor: Colors.white,
+                elevation: 0,
+                iconTheme: IconThemeData(color: Colors.black),
+                titleTextStyle: GoogleFonts.changaOne(
+                  fontSize: 20,
+                  color: Colors.black,
+                ),
+              ),
               textTheme: GoogleFonts.changaOneTextTheme(),
             ),
-            home: const OnboardingScreen(), // Default starting screen
+
+            home: const HomeNavigator(), // Default starting screen
           );
         },
       ),
