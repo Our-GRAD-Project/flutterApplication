@@ -6,7 +6,9 @@ import '../../core/models/category_model.dart';
 import '../../core/models/summary_model.dart';
 import '../../core/services/category_service.dart';
 import '../../core/services/summary_service.dart';
+import '../../core/services/search_service.dart';
 
+import '../search_screen/search_results_screen.dart';
 import '../shared/AnimatedCategoryCard.dart';
 import '../shared/book_card.dart';
 import 'animation.dart';
@@ -21,6 +23,9 @@ class HomeBody extends StatefulWidget {
 class _HomeBodyState extends State<HomeBody> {
   final CategoryService _categoryService = CategoryService();
   final SummaryService _summaryService = SummaryService();
+  final SearchService _searchService = SearchService();
+
+  final TextEditingController _searchController = TextEditingController();
 
   List<Category> _categories = [];
   List<Summary> _summaries = [];
@@ -52,6 +57,19 @@ class _HomeBodyState extends State<HomeBody> {
     }
   }
 
+  void _onSearchSubmitted(String query) {
+    if (query.trim().isEmpty) return;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SearchResultsScreen(
+          keyword: query.trim(),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
@@ -70,7 +88,6 @@ class _HomeBodyState extends State<HomeBody> {
         buildFeaturedCard(_summaries),
         SizedBox(height: 24.h),
 
-        // First summary section
         BookListSection(
           title: 'Today for you',
           subtitle: 'Similar summaries to the ones you like',
@@ -81,18 +98,14 @@ class _HomeBodyState extends State<HomeBody> {
         buildFeaturedCard(_summaries),
         SizedBox(height: 24.h),
 
-        // Category section
         buildCategorySection(),
 
         SizedBox(height: 24.h),
-
-        // Reuse the same summaries again for now
         BookListSection(
           title: 'Top Rated',
           subtitle: 'Most loved books by our clients',
           summaries: _summaries,
         ),
-
         SizedBox(height: 24.h),
       ],
     );
@@ -106,6 +119,9 @@ class _HomeBodyState extends State<HomeBody> {
         borderRadius: BorderRadius.circular(24.r),
       ),
       child: TextField(
+        controller: _searchController,
+        textInputAction: TextInputAction.search,
+        onSubmitted: _onSearchSubmitted,
         decoration: InputDecoration(
           hintText: 'Type title, author, keyword',
           hintStyle: TextStyle(
@@ -186,5 +202,11 @@ class _HomeBodyState extends State<HomeBody> {
         );
       },
     );
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 }

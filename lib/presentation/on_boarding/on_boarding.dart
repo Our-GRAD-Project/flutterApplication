@@ -1,5 +1,6 @@
 import 'package:baseera_app/presentation/on_boarding/widget.dart';
 import 'package:baseera_app/presentation/on_boarding_survey/on_boarding_survey.dart';
+import 'package:baseera_app/presentation/register/sign_in_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -41,7 +42,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     },
                     onSecondaryButtonPressed: () {
                       // Handle skip
-                      Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => OnboardingSurvey(),));
+                      Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => SignInScreen(),));
                     },
                   ),
                   OnboardingPage(
@@ -54,7 +55,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     primaryButtonText: 'Get Started',
                     onPrimaryButtonPressed: () {
                       // Handle get started
-                      Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => OnboardingSurvey(),));
+                      Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => SignInScreen(),));
                     },
                   ),
                 ],

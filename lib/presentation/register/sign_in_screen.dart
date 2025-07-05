@@ -1,3 +1,4 @@
+import 'package:baseera_app/presentation/home_screen/bottom_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../core/cubits/auth/auth_cubit.dart';
@@ -47,7 +48,7 @@ class _SignInScreenState extends State<SignInScreen> {
               );
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const OnboardingScreen()),
+                MaterialPageRoute(builder: (context) => const HomeNavigator()),
               );
             } else if (state is AuthError) {
               ScaffoldMessenger.of(context).showSnackBar(

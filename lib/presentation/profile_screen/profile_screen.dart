@@ -1,3 +1,4 @@
+import 'package:baseera_app/presentation/register/sign_in_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -146,7 +147,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   _buildMenuItem(
                     icon: Icons.logout,
                     title: "Logout",
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx)=>SignInScreen()));
+                    },
                     isLogout: true,
                   ),
                 ],

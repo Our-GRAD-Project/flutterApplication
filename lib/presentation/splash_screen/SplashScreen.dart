@@ -1,3 +1,4 @@
+import 'package:baseera_app/presentation/on_boarding/on_boarding.dart';
 import 'package:flutter/material.dart';
 import 'package:baseera_app/presentation/home_screen/bottom_navigator.dart';
 
@@ -36,7 +37,7 @@ class _SplashScreenState extends State<SplashScreen>
     Future.delayed(Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => SignInScreen()),
+        MaterialPageRoute(builder: (_) => OnboardingScreen()),
       );
     });
   }

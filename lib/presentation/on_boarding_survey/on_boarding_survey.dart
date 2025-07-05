@@ -276,32 +276,83 @@ class _OnboardingSurveyState extends State<OnboardingSurvey> {
   }
 
   Widget _buildBookSelection() {
-    List<String> bookPaths = List.generate(9, (index) => 'assets/images/temp_book.png');
-    List<String> bookNames = [
-      'Self Help', 'Business', 'Psychology', 'Leadership', 'Motivation',
-      'Personal Growth', 'Fiction', 'Science', 'History'
+    // Book data (name, image path, and category name)
+    final List<Map<String, String>> books = [
+      {
+        "title": "Dare to Lead",
+        "image": "assets/images/interested_in_books/dare_to_lead.jpg",
+        "category": "Leadership"
+      },
+      {
+        "title": "Leaders Eat Last",
+        "image": "assets/images/interested_in_books/Leaders Eat Last.png",
+        "category": "Leadership"
+      },
+      {
+        "title": "Eat That Frog!",
+        "image": "assets/images/interested_in_books/Eat That Frog.jpg",
+        "category": "Time Management"
+      },
+      {
+        "title": "The 7 Habits of Highly Effective People",
+        "image": "assets/images/interested_in_books/The 7 Habits of Highly Effective People.jpg",
+        "category": "Time Management"
+      },
+      {
+        "title": "Emotional Intelligence",
+        "image": "assets/images/interested_in_books/Emotional Intelligence.png",
+        "category": "Emotional Intelligence"
+      },
+      {
+        "title": "The Language of Emotions",
+        "image": "assets/images/interested_in_books/The Language of Emotions.jpg",
+        "category": "Emotional Intelligence"
+      },
+      {
+        "title": "Thinking, Fast and Slow",
+        "image": "assets/images/interested_in_books/Thinking, Fast and Slow.jpg",
+        "category": "Critical Thinking"
+      },
+      {
+        "title": "The Demon-Haunted World",
+        "image": "assets/images/interested_in_books/The Demon-Haunted World.jpg",
+        "category": "Critical Thinking"
+      },
+      {
+        "title": "Rich Dad Poor Dad",
+        "image": "assets/images/interested_in_books/Rich Dad Poor Dad.jpg",
+        "category": "Finance and Investment"
+      },
+      {
+        "title": "Download", // Placeholder title for download.jpg
+        "image": "assets/images/interested_in_books/download.jpg",
+        "category": "Finance and Investment"
+      },
     ];
 
     return GridView.builder(
       shrinkWrap: true,
+      itemCount: books.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
         crossAxisSpacing: 11.w,
         mainAxisSpacing: 10.h,
         childAspectRatio: 115.w / 200.h,
       ),
-      itemCount: bookPaths.length,
       itemBuilder: (context, index) {
-        String bookName = bookNames[index];
-        String imagePath = bookPaths[index];
-        bool isSelected = surveyAnswers.selectedBooks!.contains(bookName);
+        final book = books[index];
+        final title = book["title"]!;
+        final image = book["image"]!;
+        // final category = book["category"]; // Not used yet
+
+        final isSelected = surveyAnswers.selectedBooks!.contains(title);
 
         return GestureDetector(
           onTap: () => setState(() {
             if (isSelected) {
-              surveyAnswers.selectedBooks!.remove(bookName);
+              surveyAnswers.selectedBooks!.remove(title);
             } else {
-              surveyAnswers.selectedBooks!.add(bookName);
+              surveyAnswers.selectedBooks!.add(title);
             }
             _surveyState = SurveyState(surveyData: surveyAnswers);
           }),
@@ -316,7 +367,7 @@ class _OnboardingSurveyState extends State<OnboardingSurvey> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20.r),
               child: Image.asset(
-                imagePath,
+                image,
                 width: 115.w,
                 height: 200.h,
                 fit: BoxFit.cover,
@@ -327,6 +378,7 @@ class _OnboardingSurveyState extends State<OnboardingSurvey> {
       },
     );
   }
+
 
   Widget _buildAgreement() {
     return Column(
