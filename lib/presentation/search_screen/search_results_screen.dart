@@ -64,7 +64,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
               SizedBox(width: 12.w),
               Expanded(
                 child: Text(
-                  'Search: "${widget.keyword}"',
+                  'Search: ${widget.keyword}',
                   style: TextStyle(
                     fontSize: 22.sp,
                     fontWeight: FontWeight.w600,

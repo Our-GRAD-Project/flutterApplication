@@ -6,10 +6,13 @@ class SummaryService {
   static const String _baseUrl =
       'https://graduationprojectapi-production-e29d.up.railway.app/api/v1/summary';
 
-  Future<List<Summary>> getSummaries() async {
-    return _fetchSummaries('$_baseUrl/');
+  // Updated to accept a page parameter
+  Future<List<Summary>> getSummaries({required int page}) async {
+    final url = '$_baseUrl/?page=$page';
+    return _fetchSummaries(url);
   }
 
+  // Category method left unchanged (you didn’t request any changes here)
   Future<List<Summary>> getSummariesByCategoryId(String categoryId) async {
     final url = '$_baseUrl/category/$categoryId';
     return _fetchSummaries(url);

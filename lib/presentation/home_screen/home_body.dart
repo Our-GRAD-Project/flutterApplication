@@ -28,7 +28,8 @@ class _HomeBodyState extends State<HomeBody> {
   final TextEditingController _searchController = TextEditingController();
 
   List<Category> _categories = [];
-  List<Summary> _summaries = [];
+  List<Summary> _summaries_for_you = [];
+  List<Summary> _summaries_top_rate = [];
 
   bool _isLoading = true;
   String? _error;
@@ -42,11 +43,13 @@ class _HomeBodyState extends State<HomeBody> {
   Future<void> _fetchData() async {
     try {
       final categories = await _categoryService.getCategories();
-      final summaries = await _summaryService.getSummaries();
+      final summaries_for_you = await _summaryService.getSummaries(page: 1);
+      final summaries_top_rated = await _summaryService.getSummaries(page: 2);
 
       setState(() {
         _categories = categories;
-        _summaries = summaries;
+        _summaries_for_you = summaries_for_you;
+        _summaries_top_rate = summaries_top_rated;
         _isLoading = false;
       });
     } catch (e) {
@@ -85,17 +88,17 @@ class _HomeBodyState extends State<HomeBody> {
       children: [
         buildSearchBar(),
         SizedBox(height: 16.h),
-        buildFeaturedCard(_summaries),
+        buildFeaturedCard(_summaries_for_you),
         SizedBox(height: 24.h),
 
         BookListSection(
           title: 'Today for you',
           subtitle: 'Similar summaries to the ones you like',
-          summaries: _summaries,
+          summaries: _summaries_for_you,
         ),
 
         SizedBox(height: 24.h),
-        buildFeaturedCard(_summaries),
+        buildFeaturedCard(_summaries_top_rate),
         SizedBox(height: 24.h),
 
         buildCategorySection(),
@@ -104,7 +107,7 @@ class _HomeBodyState extends State<HomeBody> {
         BookListSection(
           title: 'Top Rated',
           subtitle: 'Most loved books by our clients',
-          summaries: _summaries,
+          summaries: _summaries_top_rate,
         ),
         SizedBox(height: 24.h),
       ],
