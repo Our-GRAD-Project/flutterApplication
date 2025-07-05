@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
               textTheme: GoogleFonts.changaOneTextTheme(),
             ),
 
-            home: const HomeNavigator(), // Default starting screen
+            home: const SignInScreen(), // Default starting screen
           );
         },
       ),

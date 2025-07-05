@@ -67,7 +67,7 @@ class _HomeBodyState extends State<HomeBody> {
       children: [
         buildSearchBar(),
         SizedBox(height: 16.h),
-        buildFeaturedCard(), // you already had this, not shown in your snippet
+        buildFeaturedCard(_summaries),
         SizedBox(height: 24.h),
 
         // First summary section
@@ -78,7 +78,7 @@ class _HomeBodyState extends State<HomeBody> {
         ),
 
         SizedBox(height: 24.h),
-        buildFeaturedCard(),
+        buildFeaturedCard(_summaries),
         SizedBox(height: 24.h),
 
         // Category section

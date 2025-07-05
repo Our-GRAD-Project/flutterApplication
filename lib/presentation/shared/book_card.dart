@@ -28,7 +28,7 @@ class BookListSection extends StatelessWidget {
           height: 270.h,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: summaries.length,
+            itemCount: (summaries.length > 6)? 6:summaries.length,
             itemBuilder: (context, index) {
               final summary = summaries[index];
               return Padding(

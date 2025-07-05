@@ -4,8 +4,9 @@ import 'package:just_audio/just_audio.dart';
 
 class AudioPlayerSheet extends StatefulWidget {
   final String audioUrl;
+  final String image;
 
-  const AudioPlayerSheet({super.key, required this.audioUrl});
+  const AudioPlayerSheet({super.key, required this.audioUrl, required this.image});
 
   @override
   State<AudioPlayerSheet> createState() => _AudioPlayerSheetState();
@@ -153,8 +154,8 @@ class _AudioPlayerSheetState extends State<AudioPlayerSheet> {
           SizedBox(height: 16.h),
           ClipRRect(
             borderRadius: BorderRadius.circular(20.r),
-            child: Image.asset(
-              'assets/images/temp_book.png',
+            child: Image.network(
+              widget.image,
               width: 200.w,
               height: 260.h,
               fit: BoxFit.cover,

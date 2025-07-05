@@ -123,7 +123,7 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => CreateNewPasswordScreen(
-                      resetToken: state.resetToken,
+                      resetToken: _resetToken!,
                     ),
                   ),
                 );
@@ -209,6 +209,7 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
                             FocusScope.of(context).nextFocus();
                           }
                         },
+                        autofocus: index == 0? true: false,
                       ),
                     ),
                   ),

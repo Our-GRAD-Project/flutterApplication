@@ -57,7 +57,7 @@ class CustomBottomBar extends StatelessWidget {
                   context: context,
                   isScrollControlled: true,
                   backgroundColor: Colors.transparent,
-                  builder: (_) => AudioPlayerSheet(audioUrl: summary.audioPath),
+                  builder: (_) => AudioPlayerSheet(audioUrl: summary.audioPath, image: summary.coverImagePath),
                 );
               },
             ),

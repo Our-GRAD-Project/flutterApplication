@@ -1,7 +1,13 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-Widget buildFeaturedCard() {
+import '../../core/models/summary_model.dart';
+
+Widget buildFeaturedCard(List<Summary> summaries) {
+  List<String> imagePaths = [];
+  summaries.forEach((summary){imagePaths.add(summary.coverImagePath);});
   return Container(
     width: double.infinity,
     height: 184.h,
@@ -37,7 +43,9 @@ Widget buildFeaturedCard() {
                     ),),
                     SizedBox(height: 5.h),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xff0088FA),
                         foregroundColor: Colors.white,
@@ -61,8 +69,7 @@ Widget buildFeaturedCard() {
               child: Stack(
                 clipBehavior: Clip.none, // Allows books to go outside bounds
                 children: [
-                  _FloatingBook('assets/images/temp_book.png', speed: 2.0, offset: 0.2),
-                  _FloatingBook('assets/images/temp_book.png', speed: 2.5, offset: -0.1),
+                  _FloatingBook(imagePaths, speed: 2.5, offset: -0.1),
                 ],
               ),
             ),
@@ -123,11 +130,11 @@ class _AnimatedGradientBackgroundState extends State<_AnimatedGradientBackground
 
 // Floating book animation helper
 class _FloatingBook extends StatefulWidget {
-  final String assetPath;
+  final List<String> imagePaths; // Pass multiple cover images
   final double speed;
   final double offset;
 
-  const _FloatingBook(this.assetPath, {required this.speed, required this.offset});
+  const _FloatingBook(this.imagePaths, {required this.speed, required this.offset});
 
   @override
   State<_FloatingBook> createState() => _FloatingBookState();
@@ -138,16 +145,19 @@ class _FloatingBookState extends State<_FloatingBook> with SingleTickerProviderS
   late Animation<double> _xAnimation;
   late Animation<double> _yAnimation;
   late Animation<double> _rotateAnimation;
+  late int currentImageIndex;
+  bool forward = true;
 
   @override
   void initState() {
     super.initState();
+    currentImageIndex = Random().nextInt(widget.imagePaths.length);
+
     _controller = AnimationController(
       vsync: this,
       duration: Duration(seconds: (10 / widget.speed).round()),
-    )..repeat(reverse: true);
+    );
 
-    // Random-like movement pattern
     _xAnimation = TweenSequence<double>([
       TweenSequenceItem(tween: Tween(begin: -15.w, end: 30.w), weight: 1),
       TweenSequenceItem(tween: Tween(begin: 30.w, end: -15.w), weight: 1),
@@ -160,6 +170,26 @@ class _FloatingBookState extends State<_FloatingBook> with SingleTickerProviderS
 
     _rotateAnimation = Tween<double>(begin: -0.2, end: 0.2)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed || status == AnimationStatus.dismissed) {
+        // Change to a new image
+        setState(() {
+          int newIndex;
+          do {
+            newIndex = Random().nextInt(widget.imagePaths.length);
+          } while (newIndex == currentImageIndex);
+          currentImageIndex = newIndex;
+        });
+
+        // Reverse direction manually
+        forward ? _controller.reverse() : _controller.forward();
+        forward = !forward;
+      }
+    });
+
+    // Start animation
+    _controller.forward();
   }
 
   @override
@@ -172,8 +202,8 @@ class _FloatingBookState extends State<_FloatingBook> with SingleTickerProviderS
           top: _yAnimation.value,
           child: Transform.rotate(
             angle: _rotateAnimation.value + widget.offset,
-            child: Image.asset(
-              widget.assetPath,
+            child: Image.network(
+              widget.imagePaths[currentImageIndex],
               width: 90.w,
               height: 130.h,
               fit: BoxFit.cover,
