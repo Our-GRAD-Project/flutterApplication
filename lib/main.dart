@@ -3,6 +3,7 @@ import 'package:baseera_app/presentation/home_screen/home_body.dart';
 import 'package:baseera_app/presentation/on_boarding/on_boarding.dart';
 import 'package:baseera_app/presentation/on_boarding_survey/on_boarding_survey.dart';
 import 'package:baseera_app/presentation/register/sign_in_screen.dart';
+import 'package:baseera_app/presentation/splash_screen/SplashScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -59,7 +60,7 @@ class MyApp extends StatelessWidget {
               textTheme: GoogleFonts.changaOneTextTheme(),
             ),
 
-            home: const SignInScreen(), // Default starting screen
+            home:  SplashScreen(), // Default starting screen
           );
         },
       ),

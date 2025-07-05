@@ -8,14 +8,14 @@ class CustomAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 24.w, right: 24.w, top: 20.h, bottom: 3.h),
+      padding: EdgeInsets.only(left: 5.w, right: 24.w, top: 15.h, bottom: 2.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Image.asset(
             "assets/images/app_specific/book-open-svgrepo-com 1.png",
-            width: 40.w,
-            height: 40.h,
+            width: 100.w,
+            height: 70.h,
           ),
           Row(
             children: [

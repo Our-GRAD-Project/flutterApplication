@@ -36,7 +36,7 @@ class _AnimatedCategoryCardState extends State<AnimatedCategoryCard>
 
     _mainController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 600),
     );
 
     _scale = Tween<double>(begin: 0.7, end: 1.0).animate(

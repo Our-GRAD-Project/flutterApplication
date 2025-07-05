@@ -148,11 +148,14 @@ class _HomeBodyState extends State<HomeBody> {
         Text(
           'Categories',
           style: TextStyle(
-            fontSize: 24.sp,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
+            fontSize: 32.sp,
+            color: Colors.black,
           ),
         ),
+        SizedBox(height: 8.h),
+        Text('Pick a category to explore',
+            style: TextStyle(
+                fontSize: 18.sp, fontFamily: "roboto", color: Colors.black)),
         SizedBox(height: 16.h),
         SizedBox(
           height: 80.h,

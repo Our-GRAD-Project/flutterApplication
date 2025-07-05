@@ -37,13 +37,19 @@ class BookDetailsBody extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(16.r),
-                  child: Image.network(
-                    summary.coverImagePath,
-                    width: 150.w,
-                    height: 250.h,
-                    fit: BoxFit.cover,
+                Container(
+                  width: 150.w,
+                  height: 250.h,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16.r),
+                    border: Border.all(color: Colors.black26, width: 2),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(14.r),
+                    child: Image.network(
+                      summary.coverImagePath,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
                 SizedBox(width: 20.w),

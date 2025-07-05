@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../core/models/summary_model.dart';
 
 class BookSummaryWidget extends StatelessWidget {
@@ -10,34 +11,36 @@ class BookSummaryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF5F9FF),
       appBar: AppBar(
-        surfaceTintColor: Colors.transparent,
         backgroundColor: Colors.white,
-        elevation: 0,
+        elevation: 1,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: 28.sp, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
+          icon: Icon(Icons.arrow_back_ios, size: 22.sp),
+          onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
           summary.title,
-          style: TextStyle(
-            fontSize: 18.sp,
+          style: GoogleFonts.lato(
+            fontSize: 21.sp,
+            fontWeight: FontWeight.w900,
             color: Colors.black,
-            fontWeight: FontWeight.w600,
           ),
         ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: 22.w, vertical: 20.h),
         physics: const BouncingScrollPhysics(),
-        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Center(
+            // Book cover
+            Material(
+              elevation: 5,
+              borderRadius: BorderRadius.circular(14.r),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(12.r),
+                borderRadius: BorderRadius.circular(14.r),
                 child: Image.network(
                   summary.coverImagePath,
                   width: 180.w,
@@ -47,30 +50,85 @@ class BookSummaryWidget extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20.h),
+
+            // Title
             Text(
-              "By ${summary.author}",
-              style: TextStyle(
-                fontSize: 15.sp,
-                color: Colors.grey.shade700,
-                fontWeight: FontWeight.w500,
+              summary.title,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.lato(
+                fontSize: 21.sp,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
               ),
             ),
-            SizedBox(height: 20.h),
-            Divider(),
             SizedBox(height: 10.h),
-            Text(
-              summary.content,
-              style: TextStyle(
-                fontSize: 14.5.sp,
-                height: 1.7,
-                color: Colors.grey.shade800,
+
+            // Author tag
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
+              decoration: BoxDecoration(
+                color: const Color(0xFFD0E8FF),
+                borderRadius: BorderRadius.circular(20.r),
               ),
-              textAlign: TextAlign.justify,
+              child: Text(
+                "By ${summary.author}",
+                style: TextStyle(
+                  fontSize: 14.5.sp,
+                  color: const Color(0xFF1565C0),
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ),
-            SizedBox(height: 24.h),
+            SizedBox(height: 26.h),
+
+            // Summary content
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 24.h),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(18.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 18,
+                    offset: const Offset(0, 10),
+                  )
+                ],
+              ),
+              child: _buildBeautifulText(summary.content),
+            ),
+            SizedBox(height: 40.h),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildBeautifulText(String content) {
+    final paragraphs = content
+        .split('\n')
+        .map((e) => e.trim())
+        .where((e) => e.isNotEmpty)
+        .toList();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: paragraphs.map((para) {
+        return Padding(
+          padding: EdgeInsets.only(bottom: 22.h),
+          child: Text(
+            para,
+            style: GoogleFonts.merriweather(
+              fontSize: 16.5.sp,
+              height: 2.0,
+              color: Colors.grey.shade900,
+              letterSpacing: 0.2,
+            ),
+            textAlign: TextAlign.justify,
+          ),
+        );
+      }).toList(),
     );
   }
 }

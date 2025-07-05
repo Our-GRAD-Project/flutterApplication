@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hugeicons/hugeicons.dart';
 
+import '../Download_screen/Download_screen.dart';
 import '../notification_screen/notification_screen.dart';
 import '../profile_screen/profile_screen.dart';
 import 'animation.dart';
@@ -17,7 +18,7 @@ class HomeNavigator extends StatefulWidget {
 
 class _HomeNavigatorState extends State<HomeNavigator> {
   int _currentIndex = 1;
-  List bodys = ['DownloadBody()', HomeBody(), EmptyLibraryScreen()];
+  List bodys = [DownloadBody(), HomeBody(), EmptyLibraryScreen()];
 
   @override
   Widget build(BuildContext context) {
@@ -148,7 +149,7 @@ class _HomeNavigatorState extends State<HomeNavigator> {
   }
   Widget buildAppBarNotHome() {
     return Padding(
-      padding: EdgeInsets.only(left: 24.w, right: 24.w, top: 14.h, bottom: 2.h),
+      padding: EdgeInsets.only(left: 10.w, right: 10.w, top: 10.h, bottom: 2.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -166,8 +167,8 @@ class _HomeNavigatorState extends State<HomeNavigator> {
           ),
           Image.asset(
             "assets/images/app_specific/book-open-svgrepo-com 1.png",
-            width: 40.w,
-            height: 40.h,
+            width: 80.w,
+            height: 70.h,
             color: Colors.blue,
           ),
         ],
@@ -176,14 +177,14 @@ class _HomeNavigatorState extends State<HomeNavigator> {
   }
   Widget _buildAppBar(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 24.w, right: 24.w, top: 14.h, bottom: 2.h),
+      padding: EdgeInsets.only(left: 10.w, right: 24.w, top: 5.h, bottom: 2.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Image.asset(
             "assets/images/app_specific/book-open-svgrepo-com 1.png",
-            width: 40.w,
-            height: 40.h,
+            width: 100.w,
+            height: 70.h,
           ),
           Row(
             children: [
