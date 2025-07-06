@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'dart:io';
 import '../../core/models/summary_model.dart';
 
 class BookSummaryWidget extends StatelessWidget {
   final Summary summary;
+  final bool isOffline; // Add this parameter to indicate offline mode
 
-  const BookSummaryWidget({Key? key, required this.summary}) : super(key: key);
+  const BookSummaryWidget({
+    Key? key,
+    required this.summary,
+    this.isOffline = false, // Default to false for backward compatibility
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +34,17 @@ class BookSummaryWidget extends StatelessWidget {
           ),
         ),
         centerTitle: true,
+        actions: [
+          if (isOffline)
+            Padding(
+              padding: EdgeInsets.only(right: 16.w),
+              child: Icon(
+                Icons.offline_bolt,
+                color: Colors.green,
+                size: 24.sp,
+              ),
+            ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 22.w, vertical: 20.h),
@@ -35,18 +52,13 @@ class BookSummaryWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Book cover
+            // Book cover - Handle both network and file images
             Material(
               elevation: 5,
               borderRadius: BorderRadius.circular(14.r),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(14.r),
-                child: Image.network(
-                  summary.coverImagePath,
-                  width: 180.w,
-                  height: 250.h,
-                  fit: BoxFit.cover,
-                ),
+                child: _buildBookCover(),
               ),
             ),
             SizedBox(height: 20.h),
@@ -101,6 +113,59 @@ class BookSummaryWidget extends StatelessWidget {
             SizedBox(height: 40.h),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildBookCover() {
+    // If offline mode and we have a local image path, use File
+    if (isOffline && summary.coverImagePath.isNotEmpty) {
+      return Image.file(
+        File(summary.coverImagePath),
+        width: 180.w,
+        height: 250.h,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return _buildFallbackCover();
+        },
+      );
+    }
+
+    // Otherwise, use network image
+    return Image.network(
+      summary.coverImagePath,
+      width: 180.w,
+      height: 250.h,
+      fit: BoxFit.cover,
+      errorBuilder: (context, error, stackTrace) {
+        return _buildFallbackCover();
+      },
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) return child;
+        return Container(
+          width: 180.w,
+          height: 250.h,
+          child: Center(
+            child: CircularProgressIndicator(
+              value: loadingProgress.expectedTotalBytes != null
+                  ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                  : null,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildFallbackCover() {
+    return Container(
+      width: 180.w,
+      height: 250.h,
+      color: Colors.grey[300],
+      child: Icon(
+        Icons.book,
+        size: 64.sp,
+        color: Colors.grey[600],
       ),
     );
   }

@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:http/http.dart' as http;
 import 'package:hugeicons/hugeicons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:baseera_app/core/models/summary_model.dart';
 import '../../core/services/jwt_decoder.dart';
 import 'dart:convert';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+// Add to pubspec.yaml: http: ^1.1.0
+// import 'package:http/http.dart' as http;
 
 class BookDetailsBody extends StatefulWidget {
   final Summary summary;
@@ -17,6 +22,8 @@ class BookDetailsBody extends StatefulWidget {
 
 class _BookDetailsBodyState extends State<BookDetailsBody> {
   bool isSaved = false;
+  bool isDownloaded = false;
+  bool isDownloading = false;
   String? userId;
 
   @override
@@ -24,6 +31,7 @@ class _BookDetailsBodyState extends State<BookDetailsBody> {
     super.initState();
     _loadUserData().then((_) {
       _checkIfSaved();
+      _checkIfDownloaded();
     });
   }
 
@@ -60,12 +68,34 @@ class _BookDetailsBodyState extends State<BookDetailsBody> {
       setState(() {
         isSaved = savedBooks.any((bookJson) {
           final book = jsonDecode(bookJson);
-          return book['title'] == widget.summary.title; // Using title as identifier for now
+          return book['id'] == widget.summary.id;
         });
       });
       print('Book "${widget.summary.title}" is saved: $isSaved'); // Debug print
     } catch (e) {
       print('Error checking if book is saved: $e');
+    }
+  }
+
+  Future<void> _checkIfDownloaded() async {
+    if (userId == null) {
+      print('Cannot check if downloaded - userId is null');
+      return;
+    }
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final downloadedBooks = prefs.getStringList('downloaded_books_$userId') ?? [];
+
+      setState(() {
+        isDownloaded = downloadedBooks.any((bookJson) {
+          final book = jsonDecode(bookJson);
+          return book['id'] == widget.summary.id;
+        });
+      });
+      print('Book "${widget.summary.title}" is downloaded: $isDownloaded'); // Debug print
+    } catch (e) {
+      print('Error checking if book is downloaded: $e');
     }
   }
 
@@ -89,14 +119,14 @@ class _BookDetailsBodyState extends State<BookDetailsBody> {
         'description': widget.summary.description,
         'createdAt': widget.summary.createdAt,
         'savedAt': DateTime.now().toIso8601String(),
-        'id':widget.summary.id
+        'id': widget.summary.id
       };
 
       if (isSaved) {
         // Remove from saved books
         savedBooks.removeWhere((bookJson) {
           final book = jsonDecode(bookJson);
-          return book['title'] == widget.summary.title;
+          return book['id'] == widget.summary.id;
         });
         print('Book removed from library'); // Debug print
       } else {
@@ -123,6 +153,53 @@ class _BookDetailsBodyState extends State<BookDetailsBody> {
       print('Error toggling save book: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Error saving book')),
+      );
+    }
+  }
+
+  Future<void> _downloadBook() async {
+    if (userId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please login to download books')),
+      );
+      return;
+    }
+
+    if (isDownloaded) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Book already downloaded')),
+      );
+      return;
+    }
+
+    setState(() {
+      isDownloading = true;
+    });
+
+    try {
+      await OfflineBookManager.downloadBook(widget.summary, userId!);
+
+      setState(() {
+        isDownloaded = true;
+        isDownloading = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Book downloaded successfully! Available in Downloads tab'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+    } catch (e) {
+      setState(() {
+        isDownloading = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Download failed: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }
@@ -196,17 +273,42 @@ class _BookDetailsBodyState extends State<BookDetailsBody> {
                         height: 35,
                         width: double.infinity,
                         child: ElevatedButton.icon(
-                          onPressed: () {
-                            // download summary logic
-                          },
-                          icon: Icon(HugeIcons.strokeRoundedInboxDownload, size: 25.sp, color: Colors.black),
+                          onPressed: isDownloading ? null : _downloadBook,
+                          icon: isDownloading
+                              ? SizedBox(
+                            width: 20.w,
+                            height: 20.h,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                            ),
+                          )
+                              : Icon(
+                            isDownloaded
+                                ? Icons.download_done
+                                : HugeIcons.strokeRoundedInboxDownload,
+                            size: 25.sp,
+                            color: Colors.black,
+                          ),
                           label: Text(
-                            "Download Summary",
-                            style: TextStyle(fontSize: 14.sp, color: Colors.black, fontWeight: FontWeight.bold),
+                            isDownloading
+                                ? "Downloading..."
+                                : isDownloaded
+                                ? "Downloaded"
+                                : "Download Summary",
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0x8AA19D9D),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
+                            backgroundColor: isDownloaded
+                                ? Colors.green.withOpacity(0.3)
+                                : const Color(0x8AA19D9D),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.r),
+                            ),
                           ),
                         ),
                       ),
@@ -282,5 +384,99 @@ class _BookDetailsBodyState extends State<BookDetailsBody> {
         Text(subtitle, style: TextStyle(color: Colors.grey, fontSize: 14.sp)),
       ],
     );
+  }
+}
+
+// Helper class for downloading and storing books offline
+class OfflineBookManager {
+  static Future<void> downloadBook(Summary summary, String userId) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final appDir = await getApplicationDocumentsDirectory();
+      final downloadDir = Directory('${appDir.path}/book_images');
+
+      if (!await downloadDir.exists()) {
+        await downloadDir.create(recursive: true);
+      }
+
+      // Download and save image locally
+      String? localImagePath;
+      if (summary.coverImagePath.isNotEmpty) {
+        final imageFileName = '${summary.id}_cover.jpg';
+        final imageFile = File('${downloadDir.path}/$imageFileName');
+
+        // Download image from URL
+        await _downloadImageFromUrl(summary.coverImagePath, imageFile);
+        localImagePath = imageFile.path;
+      }
+
+      // Create offline book data
+      final offlineBookData = {
+        'id': summary.id,
+        'title': summary.title,
+        'author': summary.author,
+        'content': summary.content,
+        'createdAt': summary.createdAt,
+        'localImagePath': localImagePath,
+        'downloadDate': DateTime.now().toIso8601String(),
+      };
+
+      // Save to SharedPreferences
+      final downloadedBooksJson = prefs.getStringList('downloaded_books_$userId') ?? [];
+
+      // Check if book already exists
+      bool exists = false;
+      for (int i = 0; i < downloadedBooksJson.length; i++) {
+        final existingBook = jsonDecode(downloadedBooksJson[i]);
+        if (existingBook['id'] == summary.id) {
+          downloadedBooksJson[i] = jsonEncode(offlineBookData);
+          exists = true;
+          break;
+        }
+      }
+
+      if (!exists) {
+        downloadedBooksJson.add(jsonEncode(offlineBookData));
+      }
+
+      await prefs.setStringList('downloaded_books_$userId', downloadedBooksJson);
+
+    } catch (e) {
+      print('Error downloading book: $e');
+      rethrow;
+    }
+  }
+
+  static Future<void> _downloadImageFromUrl(String imageUrl, File imageFile) async {
+    try {
+      final response = await http.get(Uri.parse(imageUrl));
+
+      if (response.statusCode == 200 && response.bodyBytes.isNotEmpty) {
+        await imageFile.writeAsBytes(response.bodyBytes);
+      } else {
+        throw Exception('Failed to download image: status ${response.statusCode}');
+      }
+    } catch (e) {
+      if (await imageFile.exists()) {
+        await imageFile.delete(); // Delete empty/broken file
+      }
+      print('Error downloading image: $e');
+      rethrow;
+    }
+  }
+
+  static Future<bool> isBookDownloaded(String bookId, String userId) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final downloadedBooksJson = prefs.getStringList('downloaded_books_$userId') ?? [];
+
+      return downloadedBooksJson.any((bookJson) {
+        final book = jsonDecode(bookJson);
+        return book['id'] == bookId;
+      });
+    } catch (e) {
+      print('Error checking if book is downloaded: $e');
+      return false;
+    }
   }
 }
