@@ -18,7 +18,7 @@ class HomeNavigator extends StatefulWidget {
 
 class _HomeNavigatorState extends State<HomeNavigator> {
   int _currentIndex = 1;
-  List bodys = [DownloadBody(), HomeBody(), EmptyLibraryScreen()];
+  List bodys = [DownloadBody(), HomeBody(), LibraryScreen()];
 
   @override
   Widget build(BuildContext context) {

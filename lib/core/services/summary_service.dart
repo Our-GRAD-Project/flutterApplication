@@ -10,6 +10,25 @@ class SummaryService {
   Future<List<Summary>> getSummaries({required int page}) async {
     final url = '$_baseUrl/?page=$page';
     return _fetchSummaries(url);
+  }Future<Summary> getOneSummary({required String id}) async {
+    final url = '$_baseUrl/$id'; // use id in the URL
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+
+        if (data.containsKey('summary')) {
+          return Summary.fromJson(data['summary']);
+        } else {
+          throw Exception('No summary found in response');
+        }
+      } else {
+        throw Exception('Failed to load summary: Status code ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load summary: $e');
+    }
   }
 
   // Category method left unchanged (you didn’t request any changes here)

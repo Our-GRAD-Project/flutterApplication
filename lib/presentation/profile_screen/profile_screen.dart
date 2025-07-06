@@ -16,6 +16,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? userName;
   bool isLoading = true;
 
+
   @override
   void initState() {
     super.initState();
@@ -147,7 +148,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   _buildMenuItem(
                     icon: Icons.logout,
                     title: "Logout",
-                    onTap: () {
+                    onTap: () async{
+                      final prefs = await SharedPreferences.getInstance();
+                      await prefs.remove('auth_token');
+
                       Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx)=>SignInScreen()));
                     },
                     isLogout: true,

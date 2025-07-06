@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
               textTheme: GoogleFonts.changaOneTextTheme(),
             ),
 
-            home:  SplashScreen(), // Default starting screen
+            home:  HomeNavigator(), // Default starting screen
           );
         },
       ),
